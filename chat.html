@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .chat-container {
+            width: 100%; /* Prend toute la largeur */
+            max-width: 100%; /* Ne dépasse pas la largeur maximale */
+            height: 100vh; /* Prend toute la hauteur de la vue */
+            display: flex;
+            flex-direction: column; /* Disposition en colonne pour les éléments internes */
+        }
+        .messages {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .message {
+            margin-bottom: 15px;
+        }
+        .message .user {
+            font-weight: bold;
+            color: #333;
+        }
+        .message .text {
+            margin-left: 10px;
+        }
+        .input-container {
+            display: flex;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        .input-container input[type="text"] {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+        }
+        .input-container button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            outline: none;
+        }
+
+        @media screen and (max-width: 768px) {
+            .chat-container {
+                max-width: 100%;
+                height: 100vh;
+                margin: 0;
+            }
+            .messages {
+                height: calc(100vh - 70px); /* Hauteur moins la taille de l'entrée */
+            }
+        }
+    </style>
+</head>
+<body>
+     
+    <div id="username"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      // Requête AJAX pour obtenir le nom d'utilisateur de la session
+      $.get('/username', function (username) {
+        $('#username').text('Logged in as: ' + username);
+      });
+    });
+
+  </script>
+
+
+    <div class="chat-container">
+        <div class="messages" id="messages">
+            <!-- Messages will be displayed here -->
+        </div>
+        <div class="input-container">
+            <input type="text" id="messageInput" name="messageInput" placeholder="Type your message...">
+            <button onclick="sendMessageToServer()">Send</button> 
+          <!--  <input type="submit" value="Send" > -->
+        </div>
+    </div>
+    <div id="name"> </div>
+
+    <script>
+        function sendMessageToServer() {
+          // Récupérer le message à partir de l'input (vous devez avoir un input avec l'id 'messageInput')
+          const message = document.getElementById('messageInput').value;
+          var messageInput = document.getElementById('messageInput');
+          var messageText = messageInput.value.trim();
+
+          messageInput.value = '';
+
+          // Effectuer une requête AJAX POST vers votre route '/save-message' sur le serveur Node.js
+          $.post('/save-message', { messageInput: message }, function(data, status) {
+            // Gérer la réponse du serveur si nécessaire
+            console.log('Response from server:', data);
+          });
+        }
+      </script>
+
+
+
+    <script>
+
+
+
+    $(document).ready(function () {
+      // Requête AJAX pour obtenir le nom d'utilisateur de la session
+      $.get('/username', function (username) {
+       user=username;
+      });
+    });
+
+        var originalHeight = window.innerHeight;
+
+        function handleFocus() {
+            window.addEventListener('resize', resizeHandler);
+        }
+
+        function handleBlur() {
+            window.removeEventListener('resize', resizeHandler);
+        }
+
+        function resizeHandler() {
+            if (window.innerHeight < originalHeight) {
+                var messagesContainer = document.getElementById('messages');
+                messagesContainer.style.height = (window.innerHeight - 170) + 'px'; // 170 = Height of input container
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            } else {
+                var messagesContainer = document.getElementById('messages');
+                messagesContainer.style.height = 'calc(100vh - 70px)'; // 70px = Height of input container
+            }
+        }
+
+        function sendMessage() {
+            var messageInput = document.getElementById('messageInput');
+            var messageText = messageInput.value.trim();
+            if (messageText !== '') {
+                appendMessage(user, messageText);
+                messageInput.value = '';
+            }
+        }
+
+        function appendMessage(user, text) {
+            var messagesContainer = document.getElementById('messages');
+            var messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+            var messageContent = '<span class="user">'+user+':</span> <span class="text">' + text + '</span>';
+            messageElement.innerHTML = messageContent;
+            messagesContainer.appendChild(messageElement);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        $(document).ready(function () {
+    updateMessages();
+
+    // Rafraîchit les messages toutes les quelques secondes
+    setInterval(updateMessages, 0.5); // Actualise toutes les 5 secondes
+    function updateMessages() {
+      $.get('/import-messages', function (msgs) {
+        $('#messages').empty(); // Efface les messages précédents
+        // Affiche chaque message dans le conteneur de messages
+        msgs.forEach(function (message) {
+          $('#messages').append('<div>' + message.name + ': ' + message.message + '</div>');
+        });
+
+       var messagesContainer = document.getElementById('messages');
+       var messageElement = document.createElement('div');
+       messageElement.classList.add('message');
+            
+           // var messageContent = '<span class="user">'+msgs[0].name+':</span> <span class="text">' +msgs[0].message+ '</span>'+'<br>';
+          //  messageElement.innerHTML = messageContent;
+          //  messagesContainer.appendChild(messageElement);
+           // messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }).fail(function(jqXHR, textStatus, errorThrown) {
+          console.error("Erreur lors de la récupération des messages :", textStatus, errorThrown);
+          // Afficher un message d'erreur à l'utilisateur ou effectuer une autre action en cas d'erreur
+        });
+    }
+  });
+
+
+    </script>
+
+
+
+
+
+</body>
+</html>

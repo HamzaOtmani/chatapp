@@ -1,0 +1,99 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chatsphere - Login</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .login-container {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        max-width: 400px;
+        width: 90%;
+    }
+
+    .login-container h2 {
+        margin-top: 0;
+        font-size: 24px;
+        text-align: center;
+    }
+
+    .login-container form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .login-container form label {
+        margin-bottom: 8px;
+    }
+
+    .login-container form input[type="text"],
+    .login-container form input[type="password"] {
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #cccccc;
+        border-radius: 4px;
+        font-size: 16px;
+    }
+
+    .login-container form input[type="submit"] {
+        background-color: #007bff;
+        color: #ffffff;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 2px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .login-container form input[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+
+    @media screen and (max-width: 600px) {
+        .login-container {
+            width: 90%;
+            max-width: none;
+        }
+    }
+</style>
+</head>
+<body>
+
+<div class="login-container">
+    <h2>Login to Chat Sphere</h2>
+    <form  action="/login"  class="form" method="POST">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <input type="submit" value="Login" id="login_app">
+    </form>
+    <form action="/register" class="form" method="POST">
+      <p> You do not have account ? <span style="color: blue; text-decoration: underline; cursor: pointer;" onclick="this.closest('form').submit();">Register</span> </p>
+    </form>
+    
+
+</div> 
+
+
+
+
+
+</body>
+</html>
